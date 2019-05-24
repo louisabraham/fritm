@@ -31,9 +31,9 @@ Interceptor.attach(connect_p, {
     },
     onLeave: function (retval) {
         // retval should be 0 but it is -1 on windows
-        console.log("retval:", retval.toInt32());
         if (this.sa_family != 2)
             return;
+        console.log("retval:", retval.toInt32());
         var connect_request = "CONNECT " + this.addr + ":" + this.port + " HTTP/1.0\n\n";
         var buf_send = Memory.allocUtf8String(connect_request);
         socket_send(this.sockfd.toInt32(), buf_send, connect_request.length, 0);
