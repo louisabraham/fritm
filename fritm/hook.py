@@ -9,17 +9,15 @@ import frida
 SCRIPT = (Path(__file__).parent / "script.js").read_text()
 
 
-def hook(process, port=8080):
-    if str.isdigit(process):
-        process = int(process)
-    session = frida.attach(process)
+def hook(target, port=8080):
+    session = frida.attach(target)
     script = SCRIPT.replace("8080", str(port))
     frida_script = session.create_script(SCRIPT)
     frida_script.load()
 
 
 @click.command(help="Process: Unique name or PID of the process to attach to")
-@click.argument("process")
+@click.argument("target")
 @click.option(
     "-p",
     "--port",
@@ -28,9 +26,12 @@ def hook(process, port=8080):
     default=8080,
     show_default=True,
 )
-def _main(process, port):
-    hook(process, port)
-    sys.stdin.read()  # infinite loop
+def _main(target, port):
+    if str.isdigit(target):
+        target = int(target)
+    hook(target, port)
+    if not sys.flags.interactive:
+        sys.stdin.read()  # infinite loop
 
 
 if __name__ == "__main__":
