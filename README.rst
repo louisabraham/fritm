@@ -31,8 +31,13 @@ Hook the process:
 
 .. code:: bash
 
-   fritm-hook PROCESS_NAME_OR_PID
-   # or fritm-hook PROCESS_NAME_OR_PID -p PORT (default 8080)
+   fritm-hook PROCESS_NAME_OR_PID -p PORT # (default 8080)
+
+Or create a new one:
+
+.. code:: bash
+
+   fritm-spawn PATH_TO_COMMAND -p PORT # (default 8080)
 
 Launch a proxy server in Python:
 
@@ -85,6 +90,9 @@ Hooking with ``fritm.hook(process, port)``
    method <https://en.wikipedia.org/wiki/HTTP_tunnel#HTTP_CONNECT_method>`__
    with the original IP and port
 
+``fritm.spawn_and_hook(process, port)`` launches the process and ensures
+it is hooked from the beginning.
+
 MITM with ``fritm.start_proxy_server(callback, port)``
 ------------------------------------------------------
 
@@ -105,20 +113,21 @@ Differences with `mitmproxy <https://mitmproxy.org/>`__
 Differences with `proxychains <https://github.com/haad/proxychains>`__ / `proxychains-ng <https://github.com/rofl0r/proxychains-ng>`__
 ======================================================================================================================================
 
--  ``fritm-hook`` is intented as simplified and cross-platform version
+-  ``fritm-spawn`` is intented as simplified and cross-platform version
    of proxychains.
+-  ``fritm-hook`` can attach to an already running process.
 -  proxychains is not cross-platform and hard to install, whereas fritm
    is cross-platform and simple to install.
--  proxychains uses a config file whereas ``fritm-hook`` only takes two
+-  proxychains uses a config file whereas ``fritm-spawn`` only takes two
    arguments
 -  fritm includes a HTTP proxy server (that is also able to communicate
    with proxychains)
 -  proxychains can handle a lot of different proxy types (SOCKS4,
    SOCKS5, HTTPS) with a lot of options (e.g. for authentification)
 -  proxychains can chain multiple proxies
--  proxychains handles any proxy address whereas ``fritm-hook`` defaults
-   to localhost. However, if anyone needs it for remote addresses, post
-   an issue and I’ll implement it.
+-  proxychains handles any proxy address whereas ``fritm-spawn``
+   defaults to localhost. However, if anyone needs it for remote
+   addresses, post an issue and I’ll implement it.
 
 Current limitations
 ===================

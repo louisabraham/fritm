@@ -10,7 +10,7 @@ def read(fname):
 
 setup(
     name="fritm",
-    version="0.2.1",
+    version="0.3.0",
     author="Louis Abraham",
     license="MIT",
     author_email="louis.abraham@yahoo.fr",
@@ -22,7 +22,12 @@ setup(
     include_package_data=True,
     install_requires=["frida", "click"],
     python_requires=">=3.5",
-    entry_points={"console_scripts": ["fritm-hook = fritm.hook:_main"]},
+    entry_points={
+        "console_scripts": [
+            "fritm-hook = fritm.hook:_main",
+            "fritm-spawn = fritm.hook:_main_spawn",
+        ]
+    },
     classifiers=[
         "Topic :: Internet :: Proxy Servers",
         "Topic :: Internet :: WWW/HTTP",
