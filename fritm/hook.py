@@ -32,8 +32,15 @@ def hook(target, port=8080, filter="true"):
     default=8080,
     show_default=True,
 )
-def _main_spawn(target, port):
-    spawn_and_hook(target, port)
+@click.option(
+    "--filter",
+    type=str,
+    help="filter expression",
+    default="true",
+    show_default=True,
+)
+def _main_spawn(target, port, filter):
+    spawn_and_hook(target, port, filter)
     if not sys.flags.interactive:
         sys.stdin.read()  # infinite loop
 
@@ -48,9 +55,16 @@ def _main_spawn(target, port):
     default=8080,
     show_default=True,
 )
-def _main_hook(target, port):
+@click.option(
+    "--filter",
+    type=str,
+    help="filter expression",
+    default="true",
+    show_default=True,
+)
+def _main_hook(target, port, filter):
     if str.isdigit(target):
         target = int(target)
-    hook(target, port)
+    hook(target, port, filter)
     if not sys.flags.interactive:
         sys.stdin.read()  # infinite loop
