@@ -1,7 +1,7 @@
 pypi: dist
 	twine upload dist/*
 	
-dist: doc
+dist:
 	-rm dist/*
 	./setup.py sdist bdist_wheel
 
