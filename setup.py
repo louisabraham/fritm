@@ -10,7 +10,7 @@ def read(fname):
 
 setup(
     name="fritm",
-    version="0.3.1",
+    version="0.4.0",
     author="Louis Abraham",
     license="MIT",
     author_email="louis.abraham@yahoo.fr",
