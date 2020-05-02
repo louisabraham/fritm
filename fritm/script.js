@@ -7,7 +7,7 @@ var recv_p = Module.getExportByName(null, 'recv');
 var socket_recv = new NativeFunction(recv_p, 'int', ['int', 'pointer', 'int', 'int']);
 
 
-const filter = (this) => true;
+function filter(sa_family, addr, port){ return FILTER; }
 
 Interceptor.attach(connect_p, {
     onEnter: function (args) {
@@ -23,11 +23,11 @@ Interceptor.attach(connect_p, {
             if (i < 3) this.addr += '.';
         }
 
-        this.hook = filter(this);
+        this.hook = filter(this.sa_family, this.addr, this.port);
         if(!this.hook)
-            return;            
+            return;       
             
-        var newport = 8080;
+        var newport = PORT;
         sockaddr_p.add(2).writeByteArray([Math.floor(newport / 256), newport % 256]);
         sockaddr_p.add(4).writeByteArray([127, 0, 0, 1]);
 
