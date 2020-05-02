@@ -16,13 +16,13 @@ Even if you don't want to use Python, you can use the `fritm-hook`
 command to redirect the traffic to your application and implement the
 simple lecture of the `HTTP CONNECT` header.
 
-# Installation
+## Installation
 
 ``` bash
 pip install fritm
 ```
 
-# Usage
+## Usage
 
 Hook the process:
 
@@ -71,9 +71,9 @@ httpd = start_proxy_server(dumb_callback)
 Now, all the traffic will go through your application. You can modify
 anything on the fly.
 
-# How does it work?
+## How does it work?
 
-## Hooking with `fritm.hook(process, port)`
+### Hooking with `fritm.hook(process, port, filter)`
 
 1.  attach to the target process
 2.  intercept the calls to
@@ -88,7 +88,7 @@ anything on the fly.
 `fritm.spawn_and_hook(process, port)` launches the process and ensures
 it is hooked from the beginning.
 
-## MITM with `fritm.start_proxy_server(callback, port)`
+### MITM with `fritm.start_proxy_server(callback, port, filter)`
 
 1.  Launch a local server that listens for connections on the given port
 2.  Upon receiving a new connection from the hooked client, read the IP
@@ -96,7 +96,17 @@ it is hooked from the beginning.
 3.  Open a new socket to the server
 4.  Call `callback(socket_to_client, socket_to_server)`
 
-# Differences with [mitmproxy](https://mitmproxy.org/)
+
+### `filter` usage
+
+When specified, `filter` allows you to not redirect some connections.
+It is a javascript expression that can use the variables `sa_family`,
+`addr` and `port`.
+A good value is `sa_family == 2` (corresponds to `AF_INET` aka ipv4), but
+for unknown reasons `sa_family` is 0 on Windows.
+
+ 
+## Differences with [mitmproxy](https://mitmproxy.org/)
 
   - mitmproxy doesn't use function hooking, it intercepts all the
     traffic from your browser or computer
@@ -104,7 +114,7 @@ it is hooked from the beginning.
     TCP
 traffic.
 
-# Differences with [proxychains](https://github.com/haad/proxychains) / [proxychains-ng](https://github.com/rofl0r/proxychains-ng)
+## Differences with [proxychains](https://github.com/haad/proxychains) / [proxychains-ng](https://github.com/rofl0r/proxychains-ng)
 
   - `fritm-spawn` is intented as simplified and cross-platform version
     of proxychains.
@@ -122,7 +132,7 @@ traffic.
     to localhost. However, if anyone needs it for remote addresses, post
     an issue and I'll implement it.
 
-# Current limitations
+## Current limitations
 
   - Some Windows user faced issues that I couldn't reproduce
   - fritm will fail on IPv6 addresses, but it should not be hard to fix
