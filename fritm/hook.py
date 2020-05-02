@@ -21,9 +21,11 @@ def spawn_and_hook(program, port=8080, filter=None):
     frida.resume(pid)
 
 
-def hook(target, port=8080):
+def hook(target, port=8080, filter=None):
     session = frida.attach(target)
     script = SCRIPT.replace("8080", str(port))
+    if filter is not None:    
+        script = script.replace(FILTER, filter)
     frida_script = session.create_script(SCRIPT)
     frida_script.load()
 
