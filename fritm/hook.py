@@ -9,18 +9,15 @@ import frida
 SCRIPT = (Path(__file__).parent / "script.js").read_text()
 
 
-def spawn_and_hook(program, port=8080):
+def spawn_and_hook(program, port=8080, filter="true"):
     pid = frida.spawn(program)
-    session = frida.attach(pid)
-    script = SCRIPT.replace("8080", str(port))
-    frida_script = session.create_script(SCRIPT)
-    frida_script.load()
+    hook(pid, port, filter)
     frida.resume(pid)
 
 
-def hook(target, port=8080):
+def hook(target, port=8080, filter="true"):
     session = frida.attach(target)
-    script = SCRIPT.replace("8080", str(port))
+    script = SCRIPT.replace("PORT", str(port)).replace("FILTER", filter)
     frida_script = session.create_script(SCRIPT)
     frida_script.load()
 
@@ -35,8 +32,15 @@ def hook(target, port=8080):
     default=8080,
     show_default=True,
 )
-def _main_spawn(target, port):
-    spawn_and_hook(target, port)
+@click.option(
+    "--filter",
+    type=str,
+    help="filter expression",
+    default="true",
+    show_default=True,
+)
+def _main_spawn(target, port, filter):
+    spawn_and_hook(target, port, filter)
     if not sys.flags.interactive:
         sys.stdin.read()  # infinite loop
 
@@ -51,9 +55,16 @@ def _main_spawn(target, port):
     default=8080,
     show_default=True,
 )
-def _main_hook(target, port):
+@click.option(
+    "--filter",
+    type=str,
+    help="filter expression",
+    default="true",
+    show_default=True,
+)
+def _main_hook(target, port, filter):
     if str.isdigit(target):
         target = int(target)
-    hook(target, port)
+    hook(target, port, filter)
     if not sys.flags.interactive:
         sys.stdin.read()  # infinite loop

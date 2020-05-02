@@ -6,5 +6,5 @@ dist:
 	./setup.py sdist bdist_wheel
 
 clean:
-	rm -rf *.egg-info build dist
+	-rm -rf *.egg-info build dist
 
