@@ -18,7 +18,7 @@ def spawn_and_hook(program, port=8080, filter="true"):
 def hook(target, port=8080, filter="true"):
     session = frida.attach(target)
     script = SCRIPT.replace("PORT", str(port)).replace("FILTER", filter)
-    frida_script = session.create_script(SCRIPT)
+    frida_script = session.create_script(script)
     frida_script.load()
 
 
