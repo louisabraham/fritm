@@ -10,7 +10,7 @@ def read(fname):
 
 setup(
     name="fritm",
-    version="0.3.0",
+    version="0.3.1",
     author="Louis Abraham",
     license="MIT",
     author_email="louis.abraham@yahoo.fr",
@@ -24,7 +24,7 @@ setup(
     python_requires=">=3.5",
     entry_points={
         "console_scripts": [
-            "fritm-hook = fritm.hook:_main",
+            "fritm-hook = fritm.hook:_main_hook",
             "fritm-spawn = fritm.hook:_main_spawn",
         ]
     },
