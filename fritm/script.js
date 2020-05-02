@@ -6,6 +6,9 @@ var recv_p = Module.getExportByName(null, 'recv');
 // ssize_t recv(int sockfd, void *buf, size_t len, int flags);
 var socket_recv = new NativeFunction(recv_p, 'int', ['int', 'pointer', 'int', 'int']);
 
+
+const filter = (this) => true;
+
 Interceptor.attach(connect_p, {
     onEnter: function (args) {
         // int connect(int sockfd, const struct sockaddr *addr,
@@ -13,9 +16,6 @@ Interceptor.attach(connect_p, {
         this.sockfd = args[0];
         var sockaddr_p = args[1];
         this.sa_family = sockaddr_p.add(1).readU8();
-        // Only hook AF_INET
-        if (this.sa_family != 2)
-            return;
         this.port = 256 * sockaddr_p.add(2).readU8() + sockaddr_p.add(3).readU8();
         this.addr = "";
         for (var i = 0; i < 4; i++) {
@@ -23,6 +23,10 @@ Interceptor.attach(connect_p, {
             if (i < 3) this.addr += '.';
         }
 
+        this.hook = filter(this);
+        if(!this.hook)
+            return;            
+            
         var newport = 8080;
         sockaddr_p.add(2).writeByteArray([Math.floor(newport / 256), newport % 256]);
         sockaddr_p.add(4).writeByteArray([127, 0, 0, 1]);
@@ -30,9 +34,10 @@ Interceptor.attach(connect_p, {
         console.log("connection to:", this.addr, this.port);
     },
     onLeave: function (retval) {
-        // retval should be 0 but it is -1 on windows
-        if (this.sa_family != 2)
+        if (!this.hook)
             return;
+
+        // retval should be 0 but it is -1 on windows
         console.log("retval:", retval.toInt32());
         var connect_request = "CONNECT " + this.addr + ":" + this.port + " HTTP/1.0\n\n";
         var buf_send = Memory.allocUtf8String(connect_request);

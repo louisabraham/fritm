@@ -8,11 +8,14 @@ import frida
 
 SCRIPT = (Path(__file__).parent / "script.js").read_text()
 
+FILTER = "(this) => true;"
 
-def spawn_and_hook(program, port=8080):
+def spawn_and_hook(program, port=8080, filter=None):
     pid = frida.spawn(program)
     session = frida.attach(pid)
     script = SCRIPT.replace("8080", str(port))
+    if filter is not None:    
+        script = script.replace(FILTER, filter)
     frida_script = session.create_script(SCRIPT)
     frida_script.load()
     frida.resume(pid)
